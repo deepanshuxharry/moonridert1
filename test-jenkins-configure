@@ -1,0 +1,41 @@
+// create a test jenkins job to check this 
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_CLI_EXPERIMENTAL = 'enabled'  // Enable Docker experimental features if needed
+    }
+    
+    stages {
+        stage('Test Docker') {
+            steps {
+                script {
+                    echo "[INFO] Running docker ps to list containers"
+                    sh 'docker ps'
+                }
+            }
+        }
+        
+        stage('Test Kubernetes') {
+            steps {
+                script {
+                    echo "[INFO] Running kubectl get pods to list pods"
+                    sh 'kubectl get pods --namespace=default'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "[INFO] Pipeline execution completed."
+        }
+        success {
+            echo "[✅] Docker and Kubernetes tests passed."
+        }
+        failure {
+            echo "[❌] Docker or Kubernetes test failed."
+        }
+    }
+}
+

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: product247.com
+      http:
+        paths:
+          - path: "/app(/|$)(.*)" # use it as http://product247.com/app/<endpoints of apps>
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: springboot-crud-svc # name of your app svc # type should be ClusterIP
+                port:
+                  number: 9191
